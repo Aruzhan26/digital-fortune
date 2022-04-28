@@ -50,12 +50,7 @@ def func(message):
     if (message.text == "👋 Хиромантия"):
         bot.send_message(message.chat.id, text="Сфотографируй левую ладонь и отправь фото)")
     elif (message.text == "❓ Карты ТАРО"):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("Как меня зовут?")
-        btn2 = types.KeyboardButton("Что я могу?")
-        back = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1, btn2, back)
-        bot.send_message(message.chat.id, text="Задай мне вопрос", reply_markup=markup)
+        send_tarot(message)
     elif (message.text == "❓ ҚҰМАЛАҚ"):
         bot.send_message(message.chat.id, "У меня нет имени..")
 
@@ -105,5 +100,24 @@ def send_text(message):
     except Exception as ex:
         print(ex)
 
+
+def send_tarot(message):
+    a = random.randint(0, 2)
+    if a == 0:
+        img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/XV_the-devil-2-998x1536.jpg'
+        msg = "Дьявол предупреждает вас: будьте начеку"
+        msg2 = "Пить лучше мало, но долго :)"
+    elif a == 1:
+        img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/XIX_the-sun-1-998x1536.jpg'
+        msg = "Солнечные лучи ярко освещают вашу тропинку: споткнуться просто не удастся!"
+        msg2 = "Но, по-любому, смотри под ноги!"
+    else:
+        img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/XVII_the-star-2-998x1536.jpg'
+        msg = "Тебя наградят тем, что ты заслужил..."
+        msg2 = "Косяков же нет?"
+    bot.send_photo(message.chat.id, img)
+    bot.send_message(message.chat.id, msg)
+    time.sleep(3)
+    bot.send_message(message.chat.id, msg2)
 
 bot.polling(none_stop=True, interval=0)
