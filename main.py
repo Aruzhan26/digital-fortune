@@ -19,7 +19,8 @@ def get_text_messages(message):
     btn1 = types.KeyboardButton("👋 Хиромантия")
     btn2 = types.KeyboardButton("❓ Карты ТАРО")
     btn3 = types.KeyboardButton("❓ ҚҰМАЛАҚ")
-    markup.add(btn1).add(btn2).add(btn3)
+    btn4 = types.KeyboardButton("🃏 Карты ТАРО v2")
+    markup.add(btn1).add(btn2).add(btn3).add(btn4)
     # keyboard = types.InlineKeyboardMarkup()
     # # По очереди готовим текст и обработчик для каждого знака зодиака
     # key_kumalak = types.InlineKeyboardButton(text='ҚҰМАЛАҚ', callback_data='kumalak')
@@ -47,35 +48,37 @@ def get_text_messages(message):
 
 @bot.message_handler(content_types=['text'])
 def func(message):
-    if (message.text == "👋 Хиромантия"):
+    if message.text == "👋 Хиромантия":
         bot.send_message(message.chat.id, text="Сфотографируй левую ладонь и отправь фото)")
-    elif (message.text == "❓ Карты ТАРО"):
+    elif message.text == "❓ Карты ТАРО":
         send_tarot(message)
-    elif (message.text == "❓ ҚҰМАЛАҚ"):
+    elif message.text == "❓ ҚҰМАЛАҚ":
         bot.send_message(message.chat.id, "У меня нет имени..")
+    elif message.text == "🃏 Карты ТАРО v2":
+        send_tarot_v2(message)
 
 
 @bot.message_handler(content_types=["photo"])
 def send_text(message):
     print('message.photo =', message.photo)
-    fileID = message.photo[-1].file_id
-    print('fileID =', fileID)
-    file_info = bot.get_file(fileID)
+    file_id = message.photo[-1].file_id
+    print('fileID =', file_id)
+    file_info = bot.get_file(file_id)
     print('file.file_path =', file_info.file_path)
     downloaded_file = bot.download_file(file_info.file_path)
     file_path = message.chat.username + "/" + file_info.file_unique_id + ".jpg"
-    isExist = os.path.exists(message.chat.username)
-    if not isExist:
+    is_exist = os.path.exists(message.chat.username)
+    if not is_exist:
         os.makedirs(message.chat.username)
     with open(file_path, 'wb') as new_file:
         new_file.write(downloaded_file)
 
-    image = cv2.imread('./'+file_path)
+    image = cv2.imread('./' + file_path)
     try:
         hand_detector = HandDetector(min_detection_confidence=0.7)
-        handLandmarks = hand_detector.find_hand_land_marks(image=image, draw=True)
+        hand_landmarks = hand_detector.find_hand_land_marks(image=image, draw=True)
 
-        if (len(handLandmarks) != 0):
+        if len(hand_landmarks) != 0:
             rand = random.uniform(1, 100)
 
             r = int(rand % 3)
@@ -119,5 +122,30 @@ def send_tarot(message):
     bot.send_message(message.chat.id, msg)
     time.sleep(3)
     bot.send_message(message.chat.id, msg2)
+
+
+def send_tarot_v2(message):
+    a = random.randint(0, 2)
+    if a == 0:
+        img = 'https://avatars.mds.yandex.net/get-zen_doc/3418917/pub_5f0de499514fc2519cfb1933_5f0de4b70fad611164c0cd2b/scale_1200'
+        img2 = 'https://s.felomena.com/wp-content/images/taro/karty/starshie/smert.jpg'
+        msg = "Дьявол предупреждает вас: будьте начеку"
+        msg2 = "Пить лучше мало, но долго :)"
+    elif a == 1:
+        img = 'https://www.oculus.ru/image/blogs/18/docs/4879_9.jpg'
+        img2 = 'https://avatars.mds.yandex.net/get-zen_doc/2851998/pub_5f0df2700afa571885de17da_5f0df2806235522a11f4ecf5/scale_1200'
+        msg = "Солнечные лучи ярко освещают вашу тропинку: споткнуться просто не удастся!"
+        msg2 = "Но, по-любому, смотри под ноги!"
+    else:
+        img = 'https://avatars.mds.yandex.net/get-zen_doc/3179652/pub_5f0deca641987d594723cdf0_5f0decda34a56c6326a8dba7/scale_1200'
+        img2 = 'https://avatars.mds.yandex.net/get-zen_doc/2851998/pub_5f0df2700afa571885de17da_5f0df2806235522a11f4ecf5/scale_1200'
+        msg = "Тебя наградят тем, что ты заслужил..."
+        msg2 = "Косяков же нет?"
+    bot.send_photo(message.chat.id, img)
+    bot.send_message(message.chat.id, msg)
+    time.sleep(3)
+    bot.send_photo(message.chat.id, img2)
+    bot.send_message(message.chat.id, msg2)
+
 
 bot.polling(none_stop=True, interval=0)
