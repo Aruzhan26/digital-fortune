@@ -1,6 +1,6 @@
 import os
 import time
-
+import emoji
 import cv2
 import telebot
 from telebot import types
@@ -17,10 +17,9 @@ def get_text_messages(message):
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("👋 Хиромантия")
-    btn2 = types.KeyboardButton("❓ Карты ТАРО")
+    btn2 = types.KeyboardButton("🃏 Карты ТАРО")
     btn3 = types.KeyboardButton("❓ ҚҰМАЛАҚ")
-    btn4 = types.KeyboardButton("🃏 Карты ТАРО v2")
-    markup.add(btn1).add(btn2).add(btn3).add(btn4)
+    markup.add(btn1).add(btn2).add(btn3)
     # keyboard = types.InlineKeyboardMarkup()
     # # По очереди готовим текст и обработчик для каждого знака зодиака
     # key_kumalak = types.InlineKeyboardButton(text='ҚҰМАЛАҚ', callback_data='kumalak')
@@ -50,12 +49,14 @@ def get_text_messages(message):
 def func(message):
     if message.text == "👋 Хиромантия":
         bot.send_message(message.chat.id, text="Сфотографируй левую ладонь и отправь фото)")
-    elif message.text == "❓ Карты ТАРО":
+    elif message.text == "🃏 Карты ТАРО":
         send_tarot(message)
     elif message.text == "❓ ҚҰМАЛАҚ":
         bot.send_message(message.chat.id, "У меня нет имени..")
-    elif message.text == "🃏 Карты ТАРО v2":
-        send_tarot_v2(message)
+    else:
+        bot.send_message(message.chat.id, emoji.emojize('ШТА.. :confused: мое твое не понимать', language='alias'))
+        time.sleep(1)
+        bot.send_message(message.chat.id, emoji.emojize(':pray: напиши "/start"', language='alias'))
 
 
 @bot.message_handler(content_types=["photo"])
@@ -79,9 +80,7 @@ def send_text(message):
         hand_landmarks = hand_detector.find_hand_land_marks(image=image, draw=True)
 
         if len(hand_landmarks) != 0:
-            rand = random.uniform(1, 100)
-
-            r = int(rand % 3)
+            r = int(random.uniform(1, 100) % 3)
             msg = ""
             msg2 = ""
 
