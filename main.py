@@ -15,7 +15,7 @@ def get_default_buttons(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("👋 Хиромантия")
     btn2 = types.KeyboardButton("🃏 Карты ТАРО")
-    btn3 = types.KeyboardButton("❓ ҚҰМАЛАҚ")
+    btn3 = types.KeyboardButton('🫘 ҚҰМАЛАҚ')
     markup.add(btn1).add(btn2).add(btn3)
     bot.send_message(message.from_user.id, text='Выберите способ гадания', reply_markup=markup)
 
@@ -23,14 +23,7 @@ def get_default_buttons(message):
 @bot.message_handler(commands=['start'])
 def get_text_messages(message):
     bot.send_message(message.chat.id, 'Привет!')
-
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("👋 Хиромантия")
-    btn2 = types.KeyboardButton("🃏 Карты ТАРО")
-    btn3 = types.KeyboardButton("❓ ҚҰМАЛАҚ")
-    markup.add(btn1).add(btn2).add(btn3)
-
-    bot.send_message(message.from_user.id, text='Способ гадание', reply_markup=markup)
+    get_default_buttons(message)
 
 
 @bot.message_handler(content_types=['text'])
@@ -39,7 +32,7 @@ def func(message):
         bot.send_message(message.chat.id, text="Сфотографируй левую ладонь и отправь фото)")
     elif message.text == "🃏 Карты ТАРО":
         send_tarot(message)
-    elif message.text == "❓ ҚҰМАЛАҚ":
+    elif message.text == "🫘 ҚҰМАЛАҚ":
         kumalak(message)
     elif message.text == "Готов!":
         kumalak_helper(message)
