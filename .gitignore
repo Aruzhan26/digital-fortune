@@ -1,2 +1,5 @@
 .idea
 *.iml
+.git
+.__pycache__
+__pycache__/handDetect.cpython-310.pyc
