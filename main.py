@@ -31,6 +31,8 @@ def func(message):
     if message.text == "👋 Хиромантия":
         bot.send_message(message.chat.id, text="Сфотографируй левую ладонь и отправь фото)")
     elif message.text == "🃏 Карты ТАРО":
+        tarot_helper(message)
+    elif message.text == 'Сделать расклад':
         send_tarot(message)
     elif message.text == "🫘 ҚҰМАЛАҚ":
         kumalak(message)
@@ -63,7 +65,7 @@ def send_text(message):
         hand_landmarks = hand_detector.find_hand_land_marks(image=image, draw=True)
 
         if len(hand_landmarks) != 0:
-            r = int(random.uniform(1, 100) % 3)
+            r = int(random.uniform(1, 100) % 5)
             msg = ""
             msg2 = ""
 
@@ -76,18 +78,31 @@ def send_text(message):
             elif r == 2:
                 msg = "Линия ума глубокая как Океан! Тебе бы пойти в Науку!"
                 msg2 = "А, не. В Науке мало платят!"
+            elif r == 3:
+                msg = "Линия судьбы намекает на большое везение!"
+                msg2 = "Смотри, не истрать по пустякам"
+            elif r == 4:
+                msg = "Линия жизни очень короткая!!!"
+                msg2 = "А нет, фотография нечеткая."
 
             bot.send_message(message.chat.id, msg)
-            time.sleep(5)
+            time.sleep(3)
             bot.send_message(message.chat.id, msg2)
         else:
-            bot.send_message(message.chat.id, "Что с рукой? Мозоли?! ;)")
+            bot.send_message(message.chat.id, "Не пытайся меня обмануть!")
     except Exception as ex:
         print(ex)
 
+def tarot_helper(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("Сделать расклад")
+    markup.add(item1)
+    bot.send_message(message.chat.id, 'Готов сделать расклад?', reply_markup=markup)
+    time.sleep(3)
+
 
 def send_tarot(message):
-    a = int(random.uniform(1, 100) % 3)
+    a = int(random.uniform(0, 100) % 6)
     if a == 0:
         img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/XV_the-devil-2-998x1536.jpg'
         msg = "Дьявол предупреждает вас: будьте начеку"
@@ -96,14 +111,28 @@ def send_tarot(message):
         img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/XIX_the-sun-1-998x1536.jpg'
         msg = "Солнечные лучи ярко освещают вашу тропинку: споткнуться просто не удастся!"
         msg2 = "Но, по-любому, смотри под ноги!"
-    else:
+    elif a == 2:
         img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/XVII_the-star-2-998x1536.jpg'
         msg = "Тебя наградят тем, что ты заслужил..."
         msg2 = "Косяков же нет?"
+    elif a == 3:
+        img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/V_the-hierophant-1-768x1182.jpg'
+        msg = "Капля лени переносит море работы на завтра."
+        msg2 = "Сделай что-то важное прямо сейчас."
+    elif a == 4:
+        img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/I_the-magus-768x1182.jpg'
+        msg = "В ближайшее время получится избавиться от одной из вредных привычек."
+        msg2 = "Но не обольщайтесь, скоро появятся две новые."
+    elif a == 5:
+        img = 'https://www.conjunction-tarot.com/ct/wp-content/uploads/2020/10/X_the-wheel-1-998x1536.jpg'
+        msg = "80% проблем решаются сами по себе, а 20% не решаются совсем."
+        msg2 = "Так что не суетись"
     bot.send_photo(message.chat.id, img)
     bot.send_message(message.chat.id, msg)
     time.sleep(3)
     bot.send_message(message.chat.id, msg2)
+    time.sleep(1.5)
+    get_default_buttons(message)
 
 
 def kumalak(message):
@@ -112,6 +141,7 @@ def kumalak(message):
     item1 = types.KeyboardButton("Готов!")
     markup.add(item1)
     bot.send_message(message.chat.id, 'Готов?', reply_markup=markup)
+    time.sleep(3)
 
 
 def kumalak_helper(message):
@@ -120,7 +150,7 @@ def kumalak_helper(message):
     bot.send_document(message.chat.id, document=open('tiadalma.gif', 'rb'))
     time.sleep(3)
     bot.send_message(message.chat.id, "Бобы говорят....")
-    r = int(random.uniform(1, 100) % 3)
+    r = int(random.uniform(1, 100) % 6)
     if r == 0:
         msg = "ДА!"
         msg2 = "НУ ИЛИ НЕТ!"
@@ -136,14 +166,30 @@ def kumalak_helper(message):
         msg2 = "А МОЖЕТ И НЕ БЫТЬ!"
         msg3 = "А МОЖЕТ И БЫТЬ!"
         msg4 = "СПРОСИ ЗАВТРА!"
-
+    elif r == 3:
+        msg = "ОТВЕТ ТОЧНО ДА!"
+        msg2 = "И ЕЩЕ РАЗ ДА!"
+        msg3 = "А нет..."
+        msg4 = "Показалось..."
+    elif r == 4:
+        msg = "ОТВЕТ НЕТ!"
+        msg2 = "ТОЧНО НЕТ!"
+        msg3 = "И ЕЩЕ РАЗ НЕТ!"
+        msg4 = "НИ В КОЕМ СЛУЧАЕ!"
+    elif r == 5:
+        msg = "Ну что за вопрос?"
+        msg2 = "..."
+        msg3 = "Не, я серьезно!"
+        msg4 = "Что за вопрос!"
+    print(r)
     bot.send_message(message.chat.id, msg)
-    time.sleep(3)
+    time.sleep(2)
     bot.send_message(message.chat.id, msg2)
-    time.sleep(3)
+    time.sleep(2)
     bot.send_message(message.chat.id, msg3)
-    time.sleep(3)
+    time.sleep(2)
     bot.send_message(message.chat.id, msg4)
+    time.sleep(1.5)
     get_default_buttons(message)
 
 
